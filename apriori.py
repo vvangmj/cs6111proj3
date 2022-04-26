@@ -1,6 +1,9 @@
 import csv
 import itertools
-min_sup = 0.05
+from collections import defaultdict
+from itertools import combinations, chain
+# min_sup = 0.05
+
 
 def read_file(path):
     data = []
@@ -9,6 +12,7 @@ def read_file(path):
         for row in reader:
             data.append(row)
     return data
+
 
 # Count item occurrences to determine large 1-itemsets
 def first_pass(data, min_sup):
@@ -19,6 +23,7 @@ def first_pass(data, min_sup):
     # one_itemset_list: A list recording large 1-itemsets and support value
     # format for each row:  [ set - containing the itemset , float - support value]
     one_itemset_list = []
+    one_itemset_dict = defaultdict(float)
 
     # one_itemset_set: A set recording large 1-itemsets.
     # format for each element: tuple (whose size is 1)
@@ -40,9 +45,11 @@ def first_pass(data, min_sup):
     for item in item_count:
         if item_count[item] >= threshold:
             one_itemset_list.append([{item}, float(item_count[item]/tot_num)])
+            one_itemset_dict[(item,)] = float(item_count[item]/tot_num)
             one_itemset_set.add((item,))
             # one_itemset[[item]] = float(item_count[item]/tot_num)
-    return one_itemset_list, one_itemset_set, basket_allitem
+    return one_itemset_list, one_itemset_set, basket_allitem, one_itemset_dict
+
 
 # Apriori Candidate Generation
 def apriori_gen(itemset_list, itemset_set, k):
@@ -61,7 +68,7 @@ def apriori_gen(itemset_list, itemset_set, k):
                 new_cand = sorted(new_cand)
                 candidate_k.add(tuple(new_cand))
     print("Candidate size(before prune):", len(candidate_k))
-    # Prune Step
+    # Prune Step - Check all subsets of these itemsets are frequent or not
     copy_candidate_k = candidate_k.copy()
     for cand in copy_candidate_k:
         subsets = list(itertools.combinations(cand, k-1))
@@ -72,6 +79,7 @@ def apriori_gen(itemset_list, itemset_set, k):
                 break
     print("Candidate size(after prune):", len(candidate_k))
     return candidate_k
+
 
 def k_pass(itemset_list, itemset_set, basket_allitem, k, min_sup):
     print("Processing ... k =",k)
@@ -87,6 +95,7 @@ def k_pass(itemset_list, itemset_set, basket_allitem, k, min_sup):
     # k_itemset_list: A list recording large k-itemsets and support value
     # format for each row:  [ set - containing the large k-itemset , float - support value]
     k_itemset_list = []
+    k_itemset_dict = defaultdict(float)
     # k_itemset_set: A set recording large k-itemsets.
     # format for each element: tuple (whose size is k)
     # items in each tuple are sorted in alphabetic ascending order (to prevent repeated insertion and counting).
@@ -104,26 +113,45 @@ def k_pass(itemset_list, itemset_set, basket_allitem, k, min_sup):
                     break
             if findit:
                 candi_count[cand] += 1
-        if candi_count[cand]>=threshold:
+        if candi_count[cand] >= threshold:
             # print(candi_count[cand])
             k_itemset_list.append([set(cand), float(candi_count[cand]/tot_num)])
+            k_itemset_dict[tuple(cand)] = float(candi_count[cand]/tot_num)
             k_itemset_set.add(cand)
     print("k-large itemset L(k) size:", len(k_itemset_list))
-    return k_itemset_list, k_itemset_set
+    return k_itemset_list, k_itemset_set, k_itemset_dict
 
-def get_large_item(data):
-    large_item = []
-    k_itemset_list, k_itemset_set, basket_allitem = first_pass(data, min_sup)
+
+def get_large_item(data, min_sup, min_conf):
+    # format of elements in conf_rules is (LHS, RHS, supp, conf)
+    large_item, conf_rules = [], []
+    large_item_sup_dict = defaultdict(float)
+    k_itemset_list, k_itemset_set, basket_allitem, k_itemset_dict = first_pass(data, min_sup)
     large_item += k_itemset_list
+    large_item_sup_dict.update(k_itemset_dict)
     k = 2
     while True:
-        k_itemset_list, k_itemset_set = k_pass(k_itemset_list, k_itemset_set, basket_allitem, k, min_sup)
+        k_itemset_list, k_itemset_set, k_itemset_dict = k_pass(k_itemset_list, k_itemset_set, basket_allitem, k, min_sup)
         k += 1
         # print(k_itemset_list)
         if len(k_itemset_list) == 0:
             break
         large_item += k_itemset_list
-    return large_item
+        large_item_sup_dict.update(k_itemset_dict)
+        for item in k_itemset_set:
+            subsets = apriori_powerset(item)
+            for subset in subsets:
+                left, right = subset, set(item).difference(subset)
+                support = large_item_sup_dict[tuple(item)]
+                confidence = support / large_item_sup_dict[tuple(left)]
+                if confidence >= min_conf:
+                    conf_rules.append([list(left), list(right), support, confidence])
+    return large_item, conf_rules
+
+
+def apriori_powerset(iterable):
+    s = list(iterable)
+    return list(chain.from_iterable(combinations(s, r) for r in range(1, len(s))))
 
 
 if __name__ == '__main__':
