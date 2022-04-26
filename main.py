@@ -21,9 +21,7 @@ if __name__ == '__main__':
 
     data = read_file("INTEGRATED-DATASET.csv")
     large_item, conf_rules = get_large_item(data, min_sup, min_conf)
-    # with open("output.txt", "w", newline="") as f:
-    #     writer = csv.writer(f, delimiter=" ")
-    #     writer.writerow(["===============Frequent itemsets (min_sup={})===============".format(min_sup)])
+    
     text_file = open("output.txt", "w")
     m = text_file.write("=============== Frequent Itemsets (min_sup={})===============\n".format(min_sup))
 
