@@ -13,16 +13,6 @@ parser.add_argument('--c', type=float, default=0.9,
 args = parser.parse_args()
 
 
-# def print_parameters():
-#     print("Parameters:")
-#     print("Client key  = ", args.API_KEY)
-#     print("Engine key  = ", args.engine_id)
-#     print("Relation  = ", internal_name[args.r])
-#     print("Threshold = ", args.t)
-#     print("Query  = ", args.q)
-#     print("# of Tuples = ", args.k)
-#     print("Loading necessary libraries; This should take a minute or so ...")
-
 
 if __name__ == '__main__':
     path = args.f
@@ -44,15 +34,7 @@ if __name__ == '__main__':
     for items in large_item:
         print(list(items[0]), ",", "{0:.4f}%".format(items[1]*100))
         n = text_file.write("{0}, {1:.4f}%\n".format(list(items[0]), items[1]*100))
-        # with open("output.txt", "a", newline="") as f:
-        #     writer = csv.writer(f, delimiter=" ", quoting=csv.QUOTE_NONE, escapechar="\\")
-        #     writer.writerow(["{0}, {1:.4f}%".format(list(items[0]), items[1]*100)])
 
-    # with open("output.txt", "a", newline="") as f:
-    #     writer = csv.writer(f, delimiter=" ")
-    #     writer.writerow("")
-    #     writer.writerow(["===============High-confidence association rules (min_conf={})===============".format(
-    #         min_conf)])
     n = text_file.write("\n")
     m = text_file.write("=============== High-confidence Association Rules (min_conf={})===============\n".format(
         min_conf))
@@ -63,9 +45,7 @@ if __name__ == '__main__':
         l, r, sup, conf = rule[0], rule[1], rule[2], rule[3]
         print("{0}=>{1} (Conf:{2:.4f}%, Supp:{3:.4f}%)".format(l, r, conf*100, sup*100))
         n = text_file.write("{0}=>{1} (Conf:{2:.4f}%, Supp:{3:.4f}%)\n".format(l, r, conf*100, sup*100))
-        # with open("output.txt", "a", newline="") as f:
-        #     writer = csv.writer(f, delimiter=" ", quoting=csv.QUOTE_NONE, escapechar="\\")
-        #     writer.writerow(["{0}=>{1} (Conf:{2:.4f}%, Supp:{3:.4f}%)".format(l, r, conf*100, sup*100)])
+        
     text_file.close()
 
 
