@@ -141,7 +141,9 @@ def get_large_item(data, min_sup, min_conf):
         for item in k_itemset_set:
             subsets = apriori_powerset(item)
             for subset in subsets:
-                left, right = subset, set(item).difference(subset)
+                left, right = set(item).difference(subset), subset
+                if not large_item_sup_dict[tuple(left)]:
+                    continue
                 support = large_item_sup_dict[tuple(item)]
                 confidence = support / large_item_sup_dict[tuple(left)]
                 if confidence >= min_conf:
@@ -151,7 +153,7 @@ def get_large_item(data, min_sup, min_conf):
 
 def apriori_powerset(iterable):
     s = list(iterable)
-    return list(chain.from_iterable(combinations(s, r) for r in range(1, len(s))))
+    return list(chain.from_iterable(combinations(s, r) for r in range(1, 2)))
 
 
 if __name__ == '__main__':

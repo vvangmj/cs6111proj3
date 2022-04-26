@@ -6,9 +6,9 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('--f', type=str, default='INTEGRATED-DATASET.csv',
                     help='INTEGRATED-DATASET file from which to extract association rules')
-parser.add_argument('--s', type=float, default=0.1,
+parser.add_argument('--s', type=float, default=0.05,
                     help='Float number representing minimum support min_sup. value range = (0,1)')
-parser.add_argument('--c', type=float, default=0.8,
+parser.add_argument('--c', type=float, default=0.5,
                     help='Float number representing minimum confidence min_conf. value range = (0,1)')
 args = parser.parse_args()
 
@@ -32,9 +32,12 @@ if __name__ == '__main__':
     data = read_file("INTEGRATED-DATASET.csv")
     large_item, conf_rules = get_large_item(data, min_sup, min_conf)
     print("Number of Large items:", len(large_item))
+    print("=====Frequent itemsets (min_sup={})=====".format(min_sup))
     for items in large_item:
         print(items)
+
     conf_rules = sorted(conf_rules, key=lambda x: x[3], reverse=True)
+    print("=====High-confidence association rules (min_conf={})=====".format(min_conf))
     for rule in conf_rules:
         l, r, sup, conf = rule[0], rule[1], rule[2], rule[3]
         print("{}=>{}(Conf:{},Supp:{})".format(l, r, conf, sup))
