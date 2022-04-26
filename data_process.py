@@ -72,7 +72,7 @@ def data_process(path):
             if len(row[15]) != 0:
                 data_row.append("{}_{}".format(column_name[15],row[15]))
             if len(row[19]) != 0:
-                data_row.append("{}_{}".format("Result",row[5]))
+                data_row.append("{}_{}".format("Result",row[19]))
             data_list.append(data_row)
             count += 1
             # print(', '.join(row))
