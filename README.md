@@ -28,7 +28,7 @@ Or just
 ```
 python main.py
 ```
-Note that in the second case, the default value of min support is 0.2 and that of min confidence is 0.9.
+Note that in the second case, the default value of min support is 0.2 and min confidence is 0.9.
 
 
 ## Dependencies Installation
