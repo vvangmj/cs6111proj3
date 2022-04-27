@@ -11,11 +11,10 @@
 - proj3
     - main.py
     - apriori.py
-    - ???
     - INTEGRATED-DATASET.csv
 
-  - INTEGRATED-DATASET.csv
-  - README.md
+- INTEGRATED-DATASET.csv
+- README.md
 ```
 
 ## How to Run
@@ -27,8 +26,9 @@ python main.py --f <dataset_filename> --s <min_sup> --c <min_con>
 
 Or just
 ```
-python main.py --f 'INTEGRATED-DATASET.csv' --s 0.05 --c ??
+python main.py
 ```
+Note that in the second case, the default value of min support is 0.2 and that of min confidence is 0.9.
 
 
 ## Dependencies Installation
@@ -99,5 +99,9 @@ To prune the candidates, we extract the (k-1)-sized subset for each candidates, 
 After getting the pruned candidates, we generate the frequent large k-itemset by traversing through each row of the dataset, and calculating the total number of appearance of each candidate with the help of "basket_allitem".
 
 ### Association Rules Generation
+We generate association rules based on the frequent itemsets generated in the last step.
+
+For each itemset in the frequent itemsets (except the 1-itemsets), we generate all subsets with a size of 1 since for this assignment, we are specifically required to generate only association rules with exactly one item on the right side. For each subset, we put the difference between the whole itemset and it on the left-hand side and itself on the right-hand side which forms our potential association rule candidate. Then for each candidate, we calculate their confidence scores using the formula of supp(itemset)/supp(left) and only keep those whose scores are above the given threshold. After all iterations, we will obtain a list of all valid association rules. 
+
 
 
