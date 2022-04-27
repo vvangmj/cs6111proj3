@@ -28,7 +28,7 @@ Or just
 ```
 python main.py
 ```
-Note that in the second case, the default value of min support is 0.2 and min confidence is 0.9.
+**Note** that in the second case, the default values of min support and min confidence area 0.2 and 0.9 respectively.
 
 
 ## Dependencies Installation
@@ -101,7 +101,9 @@ After getting the pruned candidates, we generate the frequent large k-itemset by
 ### Association Rules Generation
 We generate association rules based on the frequent itemsets generated in the last step.
 
-For each itemset in the frequent itemsets (except the 1-itemsets), we generate all subsets with a size of 1 since for this assignment, we are specifically required to generate only association rules with exactly one item on the right side. For each subset, we put the difference between the whole itemset and it on the left-hand side and itself on the right-hand side which forms our potential association rule candidate. Then for each candidate, we calculate their confidence scores using the formula of supp(itemset)/supp(left) and only keep those whose scores are above the given threshold. After all iterations, we will obtain a list of all valid association rules. 
+For each itemset in the frequent itemsets (except the 1-itemsets), we generate all subsets with a size of 1 since for this assignment, we are specifically required to generate only association rules with exactly one item on the right side. 
+
+For each subset, we put the difference between the whole itemset and it on the left-hand side and itself on the right-hand side which forms our potential association rule candidate. Then for each candidate, we calculate their confidence scores using the formula of supp(itemset)/supp(left) and only keep those whose scores are above the given threshold. After all iterations, we will obtain a list of all valid association rules. 
 
 
 
