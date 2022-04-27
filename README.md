@@ -15,6 +15,7 @@
 
 - INTEGRATED-DATASET.csv
 - README.md
+- example-run.txt
 ```
 
 ## How to Run
@@ -105,5 +106,9 @@ For each itemset in the frequent itemsets (except the 1-itemsets), we generate a
 
 For each subset, we put the difference between the whole itemset and it on the left-hand side and itself on the right-hand side which forms our potential association rule candidate. Then for each candidate, we calculate their confidence scores using the formula of supp(itemset)/supp(left) and only keep those whose scores are above the given threshold. After all iterations, we will obtain a list of all valid association rules. 
 
-
-
+## Command Line Specification of A Compelling Sample Run
+One of the command lines that will produce compelling sample runs will be 
+```
+python main.py --f <dataset_filename> --s 0.2 --c 0.9
+```
+The results are compelling because most of the generated association rules seem reasonable. For example, one of rules is ['1-10_Students']=>['Result_Running Late'] (Conf:95.1064%, Supp:44.7000%) which indicates when we have 1-10 students in the bus, it's likely for this bus to be late.
